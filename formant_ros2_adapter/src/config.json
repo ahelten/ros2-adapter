@@ -1,0 +1,25 @@
+{
+    "streams": [
+        {
+            "topic": "/robot1/cmd_vel"
+        },
+        {
+            "topic": "/joint_states"
+        },
+        {
+            "topic": "/robot1/camera/image_raw/compressed"
+        },
+        {
+            "topic": "/robot1/laser",
+            "stream": "scan"
+        },
+        {
+            "topic": "/robot1/gps"
+        },
+        {
+            "topic": "/BotHeartbeat",
+            "messagePaths": ["app_uptime_secs"],
+            "units": ["secs"]
+        }
+    ]
+}

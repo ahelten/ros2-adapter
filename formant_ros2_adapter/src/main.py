@@ -86,6 +86,7 @@ class Adapter:
         self.fclient = FormantAgentClient(ignore_throttled=True, ignore_unavailable=True)
         self.fclient.register_config_update_callback(self.update_adapter_configuration)
         self.fclient.register_teleop_callback(self.handle_teleop)
+        self.fclient.register_custom_data_channel_message_callback(self.handle_teleop)
         self.fclient.register_command_request_callback(self.handle_command_request)
         self._tf_buffer = None
         self._tf_listener = None
@@ -482,12 +483,13 @@ class Adapter:
                 )
 
     def handle_teleop(self, msg):
+        print(msg.stream.casefold())
         try:
-            if msg.stream.casefold() == "joystick".casefold():
+            if msg.stream.casefold() == "robot1.cmd_vel":
                 if not self.joystick_publisher:
                     self.joystick_publisher = self.node.create_publisher(
                         Twist, 
-                        TELEOP_JOYSTICK_TOPIC, 
+                        "robot1/cmd_vel", 
                         10
                     )
                 else:
@@ -505,7 +507,6 @@ class Adapter:
             self.fclient.post_text("adapter.errors", "Error handling teleop: %s" %  str(e))
 
     def handle_command_request(self, request):
-        print(msg)
         self.fclient.send_command_response(request.id, success=True)
 
     def publish_twist(self, value, publisher):
