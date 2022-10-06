@@ -1,0 +1,47 @@
+version: "3.8"
+services:
+  ######################################################################################
+  ## Container for ROS-Bloom deb package generation
+  ## command: sudo docker-compose up ros-bloom
+  ## Args:  - ROS_DISTRIBUTION=kinetic | meliodic | noetic
+  ##        - BUILD_TYPE= devel | install
+  ######################################################################################
+  ros-bloom:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN_ID=32
+    container_name: formant-adapter
+    stdin_open: true
+    tty: true
+    network_mode: "host"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+      - "/usr/lib/formant:/usr/lib/formant:rw"
+      - "/home/chirag/formant_ws/src/ros2-adapter:/root/colcon_ws/src/ros2-adapter:rw"
+    command: bash 
+
+  agent:
+    container_name: formant-agent
+    restart: always
+    network_mode: host
+    pid: host
+    privileged: true
+    volumes:
+        - '/var/lib/formant:/var/lib/formant'
+        - '/usr/bin/docker:/usr/bin/docker'
+        - '/var/run/docker.sock:/var/run/docker.sock'
+    environment:
+        - FORMANT_PROVISIONING_TOKEN=0cf667c66205082f95e474b1841e19bf
+    image: 'formant/agent:focal-arm64'
+    command: bash 
+
+  # talker:
+  #   image: osrf/ros:galactic-desktop
+  #   command: ros2 run demo_nodes_cpp talker
+  # listener:
+  #   image: osrf/ros:galactic-desktop
+  #   command: ros2 run demo_nodes_cpp listener
+  #   depends_on:
+  #     - talker
