@@ -1,20 +1,21 @@
+
 {
     "streams": [
         {
-            "topic": "/robot1/cmd_vel"
+            "topic": "/ROBOT_NAME/cmd_vel"
         },
         {
-            "topic": "/joint_states"
+            "topic": "/ROBOT_NAME/joint_states"
         },
         {
-            "topic": "/robot1/camera/image_raw/compressed"
+            "topic": "/ROBOT_NAME/camera/image_raw/compressed"
         },
         {
-            "topic": "/robot1/laser",
+            "topic": "/ROBOT_NAME/laser",
             "stream": "scan"
         },
         {
-            "topic": "/robot1/gps"
+            "topic": "/ROBOT_NAME/gps"
         },
         {
             "topic": "/BotHeartbeat",

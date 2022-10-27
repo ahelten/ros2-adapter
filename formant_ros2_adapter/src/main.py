@@ -64,8 +64,10 @@ from message_utils.utils import (
     get_message_path_value,
 )
 
-TELEOP_JOYSTICK_TOPIC = "/formant/cmd_vel"
+ROBOT_NAME = os.environ['ROBOT_NAME']
+TELEOP_JOYSTICK_TOPIC = "/{0}/cmd_vel".format(ROBOT_NAME)
 BASE_REFERENCE_FRAME = "map"
+
 class Adapter:
     """
     Formant <-> ROS2 Adapter
@@ -75,7 +77,7 @@ class Adapter:
         # For console output acknowledgement that the script has started running even if it
         # hasn't yet established communication with the Formant agent.
         print("INFO: `main.py` script has started running.")
-        print("")
+        print("===========================================")
 
         # Connect to ROS2
         rclpy.init()
@@ -185,7 +187,8 @@ class Adapter:
         print("")
 
     def get_configured_topics(self):
-        return [stream["topic"] for stream in self.config["streams"]]
+        # print(self.config["streams"])
+        return [stream["topic"].replace("ROBOT_NAME", ROBOT_NAME) for stream in self.config["streams"]]
 
     def message_callback(self, topic, base_message):
         """
@@ -485,11 +488,11 @@ class Adapter:
     def handle_teleop(self, msg):
         print(msg.stream.casefold())
         try:
-            if msg.stream.casefold() == "robot1.cmd_vel":
+            if msg.stream.casefold() == "joystick.cmd_vel":
                 if not self.joystick_publisher:
                     self.joystick_publisher = self.node.create_publisher(
                         Twist, 
-                        "robot1/cmd_vel", 
+                        TELEOP_JOYSTICK_TOPIC, 
                         10
                     )
                 else:
