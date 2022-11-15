@@ -64,7 +64,11 @@ from message_utils.utils import (
     get_message_path_value,
 )
 
+ros2_namespace = os.environ.get('FORMANT_ROS2_NAMESPACE', '')
+
 TELEOP_JOYSTICK_TOPIC = "/formant/cmd_vel"
+if len(ros2_namespace) > 0:
+    TELEOP_JOYSTICK_TOPIC = "/" + ros2_namespace + TELEOP_JOYSTICK_TOPIC
 BASE_REFERENCE_FRAME = "map"
 class Adapter:
     """
@@ -80,7 +84,7 @@ class Adapter:
         # Connect to ROS2
         rclpy.init()
         self.cv_bridge = CvBridge()
-        self.node = rclpy.create_node("formant_ros2_adapter")
+        self.node = rclpy.create_node("formant_ros2_adapter", namespace=ros2_namespace)
 
         # Set up the adapter
         self.fclient = FormantAgentClient(ignore_throttled=True, ignore_unavailable=True)
