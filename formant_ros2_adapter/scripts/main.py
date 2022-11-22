@@ -308,6 +308,11 @@ class Adapter:
                 elif type(message) == Bool:
                     self.fclient.post_bitset(stream, {topic: message.data})
                 elif type(message) == NavSatFix:
+                    data = {
+                        "latitude": message.latitude,
+                        "longitude": message.longitude,
+                    }
+                    self.fclient.send_on_custom_data_channel("gps_info", json.dumps(data).encode("utf-8"))
                     self.fclient.post_geolocation(
                         stream, message.latitude, message.longitude
                     )
@@ -389,6 +394,8 @@ class Adapter:
                             odometry.transform_to_world = self._lookup_transform(message, base_reference_frame)
                             localization_manager.update_odometry(odometry)
                         else:
+                            data = message_to_json(message)
+                            self.fclient.send_on_custom_data_channel("odom_info", json.dumps(data).encode("utf-8"))
                             self.fclient.post_json(stream, message_to_json(message))
                     except grpc.RpcError as e:
                         return
