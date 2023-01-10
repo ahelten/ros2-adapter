@@ -1,0 +1,38 @@
+--- encoded_video_telemetry_uploader.py	2023-01-10 10:46:39.220105753 -0600
++++ encoded_video_telemetry_uploader_1.py	2023-01-10 10:47:08.155603109 -0600
+@@ -40,7 +40,7 @@
+ 
+         self._fclient = FormantClient()
+ 
+-    def receive_video_data(self, data: bytes, is_keyframe: bool):
++    def receive_video_data(self, data: bytes, is_keyframe: bool, hw_descriptor: str, ip_location: str):
+         self._next_buffer = BytestreamBuffer(data, time.time())
+ 
+         _current_duration_seconds = self._seconds_since_clip_start(
+@@ -55,6 +55,26 @@
+         self._video_buffers.append(self._next_buffer)
+         self._next_buffer = None
+ 
++        # Write keyframe byte data for overall video thumbnails
++        if is_keyframe:
++            # format device_name descriptors depnding on camera source
++            device_name = hw_descriptor if hw_descriptor else ip_location
++            if ip_location and device_name.find('@') != -1:
++                device_name = device_name[device_name.find('@')+1:]
++            if len(device_name) > 20:
++                device_name = device_name[:20]
++            invalid_chars = '\\/:*?\"<>|.'
++            for char in invalid_chars:
++                if char in device_name:
++                    device_name = device_name.replace(char, '')
++            
++            # Write camera data to text file named after camera source
++            file_destination = '/home/formant/video/video_' + device_name + '.txt'
++            if not os.path.exists('/home/formant/video'):
++                os.makedirs('/home/formant/video')
++            open(file_destination, 'wb').write(data)
++
++
+     def receive_audio_data(self, data: bytes) -> None:
+         buffer = BytestreamBuffer(data, time.time())
+         self._audio_buffers.append(buffer)

@@ -12,7 +12,12 @@ if [ "$SCRIPT_DIR" != "$EXISTING_DIR" ]; then
 fi
 git pull
 
+# patch agent for overall video support
+patch /lib/formant/agent/common/encoded_video_telemetry_uploader.py formant_ros2_adapter/scripts/patches/encoded_video_telemetry_uploader.patch
+patch /lib/formant/agent/common/h264_encoder.py formant_ros2_adapter/scripts/patches/h264_encoder.patch
+
 python3 -m pip install -r requirements.txt
 cd formant_ros2_adapter/scripts/
 python3 main.py &
-python3 ros_msg_handler.py
+python3 ros_msg_handler.py &
+python3 overall_video_uploader.py
