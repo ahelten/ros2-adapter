@@ -6,7 +6,7 @@ import requests
 
 def rmf_ms_callback(message):
     print("transfering to rmf ms...")
-    cmd = "curl -k http://localhost:8081/api/RmfStart"
+    cmd = "curl -k http://rmf-controller:8081/api/RmfStart"
     return_value = subprocess.call(cmd, shell=True)
     print(return_value)
 
