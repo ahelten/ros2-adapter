@@ -15,4 +15,5 @@ git pull
 python3 -m pip install -r requirements.txt
 cd formant_ros2_adapter/scripts/
 python3 main.py &
-python3 ros_msg_handler.py
+python3 ros_msg_handler.py &
+python3 rmfBasicTaskProxyService.py
