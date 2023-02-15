@@ -423,6 +423,7 @@ class Adapter:
                     try:
                         data = message_to_json(message)
                         self.fclient.send_on_custom_data_channel("path_info", json.dumps(data).encode("utf-8"))
+                        self.fclient.post_json(stream, message_to_json(message))
                     except grpc.RpcError as e:
                         return
                     except Exception as e:
