@@ -543,6 +543,7 @@ class Adapter:
         msg.angular.z = value.angular.z
 
         publisher.publish(msg)
+        print(str(msg))
 
     def publish_bool(self, value, publisher):
         msg = Bool()
