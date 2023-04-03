@@ -68,7 +68,10 @@ if __name__ == '__main__':
                 image_string = base64.b64encode(encode).decode()
                 front_data['img'] = image_string
                 fclient.send_on_custom_data_channel("video_stream_front", json.dumps(front_data).encode("utf-8"))
+        except Exception as e: 
+            print(e)
 
+        try:
             # Get rear camera image and send
             _, image = cam.retrieve_frame_rear()
             if _:
